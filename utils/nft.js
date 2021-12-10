@@ -266,7 +266,6 @@ export async function trade_id_from_hash(hash) {
   let url = `https://api.tzkt.io/v1/operations/${hash}`
   let response = await axios.get(url)
   let content = response.data
-  console.log(content)
   if (empty(content)) return 'Hash not found'
   let data = content.find(op => op.parameter.entrypoint == 'propose_trade')
   if (empty(data)) return 'This hash is not a trade proposal'
@@ -287,6 +286,19 @@ export async function query_trade(trade_id) {
     return result
   }
   else return false
+}
+
+export async function active_trades(wallet) {
+  let url = "https://api.tzkt.io/v1/bigmaps/51052/keys?active=True&cancelled=false&value.executed=false"
+  if (!empty(wallet)) url += `&value.user1=${wallet}` // active trade for a wallet
+  else url += `&value.user2=null` // all active open trades
+  let response = await axios.get(url)
+  let data = response.data
+  return data.map(e => {
+    let item = e.value
+    item.trade_id = parseInt(e.key)
+    return item
+  })
 }
 
 export async function propose_trade(data) {

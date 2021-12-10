@@ -4,7 +4,7 @@ import Head from 'next/head'
 
 import {
   empty, query_trade, urlsToTokens, connectedWalletAddress, processTransaction,
-  accept_trade, cancel_trade, propose_trade, NFT4NFT, WalletConnector, trade_id_from_hash,
+  accept_trade, cancel_trade, propose_trade, NFT4NFT, WalletConnector, trade_id_from_hash, active_trades,
 } from '../utils/nft.js'
 
 export default function PageContent() {
@@ -12,13 +12,14 @@ export default function PageContent() {
   const [acceptInfos, setAcceptInfos] = useState(false)
   const [proposeInfos, setProposeInfos] = useState(false)
   const [tradeID, setTradeID] = useState(false)
+  const [tradesList, setTradesList] = useState(false)
 
   useEffect(() => {
     ReactDOM.render(<WalletConnector />, document.getElementById("wallet_connector_container"))
   }, []);
 
   const isConnected = async () => {
-    let wallet = connectedWalletAddress()
+    let wallet = await connectedWalletAddress()
     if (empty(wallet)) {
       alert('you must first connect your wallet')
       return false
@@ -50,7 +51,8 @@ export default function PageContent() {
 
   const doCancelTrade = async (e) => {
     if (e) e.preventDefault()
-    if (!await isConnected()) return
+    let ok = await isConnected()
+    if (!ok) return
     if (empty(cancelInfos.trade_id)) return
     await processTransaction(cancel_trade, cancelInfos.trade_id)
   }
@@ -61,17 +63,24 @@ export default function PageContent() {
     setAcceptInfos(trade)
   }
 
+  const checkTrade = async (trade_id, e) => {
+    if (e) e.preventDefault()
+    document.getElementById("accept_trade_id").value = trade_id
+    return await verifyAcceptTrade()
+  }
+
   const doAcceptTrade = async (e) => {
     if (e) e.preventDefault()
-    if (!await isConnected()) return
+    let ok = await isConnected()
+    if (!ok) return
     if (empty(acceptInfos.trade_id)) return
     await processTransaction(accept_trade, acceptInfos)
-
   }
 
   const prepareTrade = async (e) => {
     if (e) e.preventDefault()
-    if (!await isConnected()) return
+    let ok = await isConnected()
+    if (!ok) return
 
     let trade = {
       user1: await connectedWalletAddress(),
@@ -99,6 +108,18 @@ export default function PageContent() {
       let trade_id = trade_id_from_hash(op_hash)
       setProposeInfos({ ophash: op_hash, trade_id: trade_id })
     }
+  }
+
+  const listTrades = async (type, e) => {
+    if (e) e.preventDefault()
+    if (!await isConnected()) return
+    let list = null
+    if (type == 'mine') {
+      let wallet = await connectedWalletAddress()
+      list = await active_trades(wallet)
+    }
+    else list = await active_trades()
+    setTradesList(list)
   }
 
   const ShowError = ({ data }) => {
@@ -262,6 +283,28 @@ export default function PageContent() {
               </>
             )}
           </div>
+        )}
+
+        <h3>Trades proposal</h3>
+        <div className="block">
+          <a href="#" onClick={e => listTrades('mine', e)} className='button'>Your active trades</a>
+          <a href="#" onClick={e => listTrades('all', e)} className='button'>All open trades</a>
+        </div>
+        {tradesList && (
+          <>
+            {empty(tradesList) ? (
+              <span>No trades found</span>
+            ) : (
+              <ul>
+                {tradesList.map(item => (
+                  <li key={item.trade_id}>
+                    <a href="#" onClick={e => checkTrade(item.trade_id)}>Trade {item.trade_id}</a>
+                  </li>
+                )
+                )}
+              </ul>
+            )}
+          </>
         )}
       </div>
     </>
