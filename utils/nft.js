@@ -327,7 +327,7 @@ export async function propose_trade(data) {
     })
     remove_op.push({
       kind: OpKind.TRANSACTION,
-      ...op.methods.update_operators([{ add_operator: { operator: NFT4NFT, token_id: t.id, owner: data.user1 } }])
+      ...op.methods.update_operators([{ remove_operator: { operator: NFT4NFT, token_id: t.id, owner: data.user1 } }])
         .toTransferParams({ amount: 0, mutez: true, storageLimit: 75 })
     })
   }
@@ -375,7 +375,7 @@ export async function accept_trade(data) {
     })
     remove_op.push({
       kind: OpKind.TRANSACTION,
-      ...op.methods.update_operators([{ add_operator: { operator: NFT4NFT, token_id: t.id, owner: account.address } }])
+      ...op.methods.update_operators([{ remove_operator: { operator: NFT4NFT, token_id: t.id, owner: account.address } }])
         .toTransferParams({ amount: 0, mutez: true, storageLimit: 75 })
     })
   }
