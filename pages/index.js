@@ -4,13 +4,14 @@ import Head from 'next/head'
 
 import {
   empty, query_trade, urlsToTokens, connectedWalletAddress, processTransaction,
-  accept_trade, cancel_trade, propose_trade, NFT4NFT, WalletConnector,
+  accept_trade, cancel_trade, propose_trade, NFT4NFT, WalletConnector, trade_id_from_hash,
 } from '../utils/nft.js'
 
 export default function PageContent() {
   const [cancelInfos, setCancelInfos] = useState(false)
   const [acceptInfos, setAcceptInfos] = useState(false)
   const [proposeInfos, setProposeInfos] = useState(false)
+  const [tradeID, setTradeID] = useState(false)
 
   useEffect(() => {
     ReactDOM.render(<WalletConnector />, document.getElementById("wallet_connector_container"))
@@ -23,6 +24,14 @@ export default function PageContent() {
       return false
     }
     return true
+  }
+
+  const getTradeId = async (e) => {
+    if (e) e.preventDefault()
+    let val = document.getElementById("tx_ophash")?.value
+    if (empty(val)) return
+    let trade_id = await trade_id_from_hash(val)
+    setTradeID(trade_id)
   }
 
   const getTradeInfos = async (trade_id) => {
@@ -170,6 +179,7 @@ export default function PageContent() {
             margin: '10px 0px'
           }}></input>
         </div>
+
         <div className='block'>
           <a href="#" onClick={prepareTrade} className="button">PREPARE TRADE</a>
         </div>
@@ -187,6 +197,17 @@ export default function PageContent() {
           </div>
         )}
 
+        <h3>Get trade id from ophash</h3>
+        <div className='block'>If the tool was not able to provide you a trade id after a proposal, you can get it from the ophash</div>
+        <div className='block'>
+          <input type="text" id="tx_ophash" style={{ width: '50%' }} placeholder="Blockchain ophash"></input>
+          <a href="#" onClick={getTradeId} className="button">GET ID</a>
+        </div>
+        {tradeID && (
+          <div className="block">
+            Trade ID: {tradeID}
+          </div>
+        )}
 
         <h3>Accept a trade</h3>
         <div className='block'>

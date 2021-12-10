@@ -116,11 +116,9 @@ export function urlsToTokens(content) {
     }
     else {
       item.id = url.split('/').pop()
-      console.log(url, item.id)
       if (item.id.match(/^[0-9]+$/)) item.fa2 = OBJKT_CONTRACT
       else continue // invalid HEN token
     }
-    console.log(item)
 
     let uuid = `${item.fa2}_${item.id}`
     if (empty(tokens[uuid])) tokens[uuid] = item
@@ -277,12 +275,13 @@ export async function trade_id_from_hash(hash) {
   let url = `https://api.tzkt.io/v1/operations/${hash}`
   let response = await axios.get(url)
   let content = response.data
-  if (!empty(content)) {
-    let result = content.value
-    result.trade_id = parseInt(content.key)
-    return result
-  }
-  else return false
+  console.log(content)
+  if (empty(content)) return 'Hash not found'
+  let data = content.find(op => op.parameter.entrypoint == 'propose_trade')
+  if (empty(data)) return 'This hash is not a trade proposal'
+  let result = parseInt(data.storage?.counter)
+  if (result > 0) return result - 1
+  else return 'Trade ID not found'
 }
 
 export async function query_trade(trade_id) {
