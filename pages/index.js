@@ -285,10 +285,10 @@ export default function PageContent() {
           </div>
         )}
 
-        <h3>Trades proposal</h3>
+        <h3>Active trades proposals</h3>
         <div className="block">
-          <a href="#" onClick={e => listTrades('mine', e)} className='button'>Your active trades</a>
-          <a href="#" onClick={e => listTrades('all', e)} className='button'>All open trades</a>
+          <a href="#" onClick={e => listTrades('mine', e)} className='button'>Your trades</a>
+          <a href="#" onClick={e => listTrades('all', e)} className='button'>Open trades</a>
         </div>
         {tradesList && (
           <>

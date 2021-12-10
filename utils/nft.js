@@ -289,7 +289,7 @@ export async function query_trade(trade_id) {
 }
 
 export async function active_trades(wallet) {
-  let url = "https://api.tzkt.io/v1/bigmaps/51052/keys?active=True&cancelled=false&value.executed=false"
+  let url = "https://api.tzkt.io/v1/bigmaps/51052/keys?limit=1000&active=True&cancelled=false&value.executed=false"
   if (!empty(wallet)) url += `&value.user1=${wallet}` // active trade for a wallet
   else url += `&value.user2=null` // all active open trades
   let response = await axios.get(url)
