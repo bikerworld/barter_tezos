@@ -93,7 +93,12 @@ export default function PageContent() {
     if (!await isConnected()) return
 
     let trade = proposeInfos
-    await processTransaction(propose_trade, trade)
+    let op_hash = await processTransaction(propose_trade, trade)
+    console.debug('ophash', op_hash)
+    if (op_hash) {
+      let trade_id = trade_id_from_hash(op_hash)
+      setProposeInfos({ ophash: op_hash, trade_id: trade_id })
+    }
   }
 
   const ShowError = ({ data }) => {
@@ -186,12 +191,20 @@ export default function PageContent() {
 
         {proposeInfos && (
           <div className='block'>
-            {proposeInfos.invalid ? (
-              <ShowError data={proposeInfos} />
+            {proposeInfos.trade_id ? (
+              <>
+                Trade ID to communicate : {acceptInfos.trade_id}
+              </>
             ) : (
               <>
-                <ShowTrade data={proposeInfos} />
-                <a href="#" onClick={doProposeTrade} className="button">SEND TRADE</a>
+                {proposeInfos.invalid ? (
+                  <ShowError data={proposeInfos} />
+                ) : (
+                  <>
+                    <ShowTrade data={proposeInfos} />
+                    <a href="#" onClick={doProposeTrade} className="button">SEND TRADE</a>
+                  </>
+                )}
               </>
             )}
           </div>

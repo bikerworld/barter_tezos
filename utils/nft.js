@@ -239,23 +239,14 @@ export async function processTransaction(method, data) {
 
   try {
     let result = await batchOp.confirmation();
-    console.debug(`${method} result`, result)
     if (result.completed) {
       let op_status = await batchOp.status()
-      console.log(`${method} status`, op_status)
       if (op_status === "applied") {
-        let trade_id = 0
-        if (method == 'process_trade') {
-          // extract the trade_id
-          console.log('batchOp', batchOp)
-          writeMessage('... SUCCESS ...', 'success')
-        }
-        else writeMessage('... SUCCESS ...', 'success')
-        return trade_id
+        writeMessage('... SUCCESS ...', 'success')
       } else {
         writeMessage(`!!! ERROR : ${op_status} !!! VERIFY with above link !!!`, 'error')
-        return false
       }
+      return batchOp.opHash
     }
     else {
       writeMessage(`!!! Transaction failed, double check with above link !!!<br/>${result.message}`, 'error')
@@ -279,6 +270,7 @@ export async function trade_id_from_hash(hash) {
   if (empty(content)) return 'Hash not found'
   let data = content.find(op => op.parameter.entrypoint == 'propose_trade')
   if (empty(data)) return 'This hash is not a trade proposal'
+  if (data.status != 'applied') return 'This proposal transaction failed, no trade was created'
   let result = parseInt(data.storage?.counter)
   if (result > 0) return result - 1
   else return 'Trade ID not found'
