@@ -9,6 +9,7 @@ const DEFAULT_NODE = 'https://mainnet.api.tez.ie'
 const BEACON_NAME = 'barter.nftbiker.xyz'
 export const NFT4NFT = 'KT1XtJ6k51y7HpLFLTNv2wBYFhfVMZ6ow3Sz'
 const OBJKT_CONTRACT = 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton'
+const FXHASH_CONTRACT = 'KT1KEa8z6vWXDJrVqtMrAeDVzsvxat3kHaCE'
 const BIGMAP_ID = 51052
 
 export var Tezos = null
@@ -156,7 +157,10 @@ export async function urlsToTokens(content) {
     }
     else {
       item.id = url.split('/').pop()
-      if (item.id.match(/^[0-9]+$/)) item.fa2 = OBJKT_CONTRACT
+      if (item.id.match(/^[0-9]+$/)) {
+        if (url.match(/fxhash\.xyz/)) item.fa2 = FXHASH_CONTRACT
+        else item.fa2 = OBJKT_CONTRACT
+      }
       else continue // invalid HEN token
     }
 
