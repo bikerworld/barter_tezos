@@ -79,6 +79,45 @@ export const WalletConnector = (props) => {
   )
 }
 
+// query contracts
+const queryContracts = `
+query MyQuery($list: [String!]) {
+  fa2(where: {path: {_in: $list}}) {
+    path
+    contract
+  }
+}
+`
+
+export async function fetchGraphQL(operationsDoc, operationName, variables) {
+  let url = 'https://data.objkt.com/v1/graphql'
+  const json = JSON.stringify({
+    query: operationsDoc,
+    variables: variables,
+    operationName: operationName
+  })
+  const response = await axios.post(url, json, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(res => res.data)
+    .catch(err => {
+      return { errors: err }
+    });
+  return response
+}
+
+var mappings = {}
+async function getContracts(list) {
+  let list_fa2 = list.filter(e => !mappings[e])
+  if (empty(list_fa2)) return mappings
+  const { errors, data } = await fetchGraphQL(queryContracts, 'MyQuery', { list: list })
+  for (let fa2 of data.fa2) {
+    mappings[fa2.path] = fa2.contract
+  }
+  return mappings
+}
 
 // utilities
 export function empty(val) {
@@ -103,9 +142,10 @@ export function shorten_wallet(tz, max) {
   }
 }
 
-export function urlsToTokens(content) {
+export async function urlsToTokens(content) {
   let list = content.split(/[\s+]/ig).filter(e => !empty(e))
   let tokens = {}
+
   for (let url of list) {
     let item = { fa2: null, id: null, amount: 1 }
     let m = url.match(/objkt\.com\/asset\/([^\/]+)\/([^\/\?&]+)/i)
@@ -124,7 +164,15 @@ export function urlsToTokens(content) {
     if (empty(tokens[uuid])) tokens[uuid] = item
     else tokens[uuid].amount += 1
   }
-  return Object.values(tokens)
+
+  // retrieve collections contracts
+  let results = Object.values(tokens)
+  let collections = results.map(e => e.fa2).filter(e => !e.match(/^KT.{34}$/))
+  await getContracts(collections)
+  for (let entry of results) {
+    if (mappings[entry.fa2]) entry.fa2 = mappings[entry.fa2]
+  }
+  return results
 }
 
 // generic wallet part

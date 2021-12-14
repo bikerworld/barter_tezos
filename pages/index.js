@@ -84,8 +84,8 @@ export default function PageContent() {
 
     let trade = {
       user1: await connectedWalletAddress(),
-      tokens1: urlsToTokens(document.getElementById("send_tokens").value),
-      tokens2: urlsToTokens(document.getElementById("accept_tokens").value),
+      tokens1: await urlsToTokens(document.getElementById("send_tokens").value),
+      tokens2: await urlsToTokens(document.getElementById("accept_tokens").value),
     }
 
     if (empty(trade.tokens1)) trade = { invalid: true, error: 'You must propose some tokens to trade' }
