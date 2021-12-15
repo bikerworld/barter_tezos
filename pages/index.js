@@ -189,12 +189,12 @@ export default function PageContent() {
 
         <h3>Propose a trade</h3>
         <div>
-          Enter the list of tokens url (HEN or OBJKT) that you offer to trade, one per line:<br />
+          Enter the list of tokens url (<b>only HEN, OBJKTCOM of FXHASH are supported</b>) that you offer to trade, one per line:<br />
           <textarea id="send_tokens" style={{ width: '100%', height: '50px', margin: '10px 0px' }}></textarea>
         </div>
 
         <div>
-          Enter the list of tokens url (HEN or OBJKT) that you want to receive, one per line:<br />
+          Enter the list of tokens url (<b>only HEN, OBJKTCOM of FXHASH are supported</b>) that you want to receive, one per line:<br />
           <textarea id="accept_tokens" style={{ width: '100%', height: '50px', margin: '10px 0px' }}></textarea>
         </div>
 
