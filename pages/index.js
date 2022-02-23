@@ -188,15 +188,20 @@ export default function PageContent() {
         <div id="processing"></div>
 
         <h3>Propose a trade</h3>
+
+        <p className='block'>
+          Tokens URL can be an url of a HEN, OBJKTCOM, VERSUM or FXHASH minted token. For any other token on a custom smartcontract, then just enter KTxxxx/TOKEN_ID (where KTxxx is the address of the minter smartcontract, and TOKEN_ID is the id of the TOKEN on that smartcontract)
+        </p>
         <div>
-          Enter the list of tokens url (<b>HEN, OBJKTCOM, VERSUM, FXHASH</b>) that you offer to trade, one per line:<br />
+          Enter the list of tokens url that you offer to trade, one per line:<br />
           <textarea id="send_tokens" style={{ width: '100%', height: '50px', margin: '10px 0px' }}></textarea>
         </div>
 
         <div>
-          Enter the list of tokens url (<b>HEN, OBJKTCOM, VERSUM, FXHASH</b>) that you want to receive, one per line:<br />
+          Enter the list of tokens url that you want to receive, one per line:<br />
           <textarea id="accept_tokens" style={{ width: '100%', height: '50px', margin: '10px 0px' }}></textarea>
         </div>
+
 
         <div className='block'>
           If this is a negociated trade, enter the wallet address (in tz... format) of the person with whom you want to do this trade, otherwise leave this empty for anyone to accept this trade<br />

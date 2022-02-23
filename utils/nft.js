@@ -156,11 +156,19 @@ export async function urlsToTokens(content) {
       if (m[1] == 'hicetnunc') item.fa2 = OBJKT_CONTRACT
       else item.fa2 = m[1]
     }
+    else if (url.match(/^KT.+\/.+/)) {
+      m = url.split('/')
+      item.fa2 = m[0]
+      item.id = m[1]
+    }
     else {
       item.id = url.split('/').pop()
       if (item.id.match(/^[0-9]+$/)) {
         if (url.match(/fxhash\.xyz/)) item.fa2 = FXHASH_CONTRACT
-        else if (url.match(/versum\.xyz/)) item.fa2 = VERSUM_CONTRACT
+        else if (url.match(/versum\.xyz/)) {
+          if (url.match(/\/token\/versum/)) item.fa2 = VERSUM_CONTRACT
+          else continue // don't know what to do with this
+        }
         else item.fa2 = OBJKT_CONTRACT
       }
       else continue // invalid HEN token
@@ -362,7 +370,7 @@ export async function propose_trade(data) {
   let for_tokens = data.tokens2
   let with_user = empty(data.user2) ? null : data.user2
 
-  let storage_limit = (tokens.length + 1) * 150
+  let storage_limit = (tokens.length + 1) * 250
 
   // build add/remove operator op lists
   let add_op = []
@@ -410,7 +418,7 @@ export async function accept_trade(data) {
 
   let trade_id = parseInt(data.trade_id)
   let tokens = data.tokens2
-  let storage_limit = (tokens.length + 1) * 150
+  let storage_limit = (tokens.length + 1) * 250
 
   // build add/remove operator op lists
   let add_op = []
