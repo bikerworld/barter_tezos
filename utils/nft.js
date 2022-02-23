@@ -83,8 +83,8 @@ export const WalletConnector = (props) => {
 
 // query contracts
 const queryContracts = `
-query MyQuery($list: [String!]) {
-  fa2(where: {path: {_in: $list}}) {
+query barterTool($list: [String!]) {
+  fa(where: {path: {_in: $list}}) {
     path
     contract
   }
@@ -114,8 +114,8 @@ var mappings = {}
 async function getContracts(list) {
   let list_fa2 = list.filter(e => !mappings[e])
   if (empty(list_fa2)) return mappings
-  const { errors, data } = await fetchGraphQL(queryContracts, 'MyQuery', { list: list })
-  for (let fa2 of data.fa2) {
+  const { errors, data } = await fetchGraphQL(queryContracts, 'barterTool', { list: list })
+  for (let fa2 of data.fa) {
     mappings[fa2.path] = fa2.contract
   }
   return mappings
