@@ -92,7 +92,7 @@ query barterTool($list: [String!]) {
 `
 
 export async function fetchGraphQL(operationsDoc, operationName, variables) {
-  let url = 'https://data.objkt.com/v1/graphql'
+  let url = 'https://data.objkt.com/v2/graphql'
   const json = JSON.stringify({
     query: operationsDoc,
     variables: variables,
