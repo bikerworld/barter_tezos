@@ -10,19 +10,20 @@
         "debug": "NODE_OPTIONS='--inspect' next dev"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": ">=1.2.36",
-        "@fortawesome/free-solid-svg-icons": ">=5.15.4",
-        "@fortawesome/react-fontawesome": ">=0.1.16",
-        "@taquito/beacon-wallet": "^11.0.2",
-        "@taquito/taquito": "^11.0.2",
+        "@fortawesome/fontawesome-svg-core": "^1.2.36",
+        "@fortawesome/free-brands-svg-icons": "^5.15.4",
+        "@fortawesome/free-solid-svg-icons": "^5.15.4",
+        "@fortawesome/react-fontawesome": "^0.1.17",
+        "@taquito/beacon-wallet": "^11.2.0",
+        "@taquito/taquito": "^11.2.0",
         "bottleneck": ">=2.19.5",
         "lodash": "^4.17.21",
-        "next": "^12.0.7",
-        "react": ">=17.0.2",
-        "react-dom": ">=17.0.2"
+        "next": "^12.1.4",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "devDependencies": {
-        "eslint": "^8.4.1",
-        "eslint-config-next": "^12.0.7"
+        "eslint": "^8.13.0",
+        "eslint-config-next": "^12.1.4"
     }
 }
